@@ -1,0 +1,17 @@
+To verify that celery and celerybeat are operating properly:
+
+1. Create and activate a virtualenv --no-site-packages
+2. clone this repo
+3. install the requirements file:
+    - pip install -r requirements.txt
+4. run celery
+    - python manage.py celeryd -B
+5. run the django server
+    - python manage.py runserver
+6. Open http://localhost:8000/test-celery-response/
+    - expected response is "Status Code: 200"
+    - if it returns a 50x status, celeryd isn't responding
+7. Open http://localhost:8000/seconds-since-last-beat/
+    - expected response is a number less than 10
+    - if the number is greater than 10, celerybeat is not running the task as it should.
+
