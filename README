@@ -1,3 +1,12 @@
+A django project set up with two celery tasks:
+
+- testapp.tasks.return_true
+    Simply returns True when called.
+- testapp.tasks.log_timestamp
+    Creates a new record of testapp.models.CeleryBeatLog with the current timestamp
+
+CELERYBEAT_SCHEDULE has log_timestamp set to run every 5 seconds.
+
 To verify that celery and celerybeat are operating properly:
 
 1. Create and activate a virtualenv --no-site-packages
@@ -9,9 +18,11 @@ To verify that celery and celerybeat are operating properly:
 5. run the django server
     - python manage.py runserver
 6. Open http://localhost:8000/test-celery-response/
+    - tries to wait on a call to return_true for up to 5 seconds.
     - expected response is "Status Code: 200"
-    - if it returns a 50x status, celeryd isn't responding
+    - if it returns a 503 status, celeryd isn't responding and the return_true call timed out
 7. Open http://localhost:8000/seconds-since-last-beat/
+    - Queries the database for the latest CeleryBeatLog object and returns now - log.timestamp
     - expected response is a number less than 10
     - if the number is greater than 10, celerybeat is not running the task as it should.
 
